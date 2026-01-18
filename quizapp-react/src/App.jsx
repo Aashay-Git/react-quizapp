@@ -5,6 +5,9 @@ function App() {
   const [questionCount, setQuestionCount] = useState(0)
   const [optionSelected, setOption] = useState(-1)
   const [marks, setMarks] = useState(0)
+  const [buttonText, setButtonText] = useState("Next")
+  const [displayRetry, setDisplayRetry] = useState(false)
+  const [displayQuestion, setDisplayQuestion] = useState(true)
 
   const questions = [
     {
@@ -59,52 +62,90 @@ function App() {
     }
   ]
   // let temp = 1
-  function nextQuestion(){
-    if(optionSelected != -1){
-      if(optionSelected == questions[questionCount].correctAnswer){
+  function nextQuestion() {
+    console.log(questionCount)
+
+
+    if (optionSelected != -1) {
+      if (optionSelected == questions[questionCount].correctAnswer) {
         setMarks(marks + 1);
       }
+      if (questionCount == 4) {
+        setDisplayRetry(true);
+        setDisplayQuestion(false);
+      } else {
+        setQuestionCount(questionCount + 1);
+        setOption(-1);
+      }
 
-      setQuestionCount(questionCount + 1);
-      setOption(-1);
+      if (questionCount == 3) {
+        setButtonText("Submit");
+      }
     }
-    
+    console.log(questionCount)
   }
 
-  function chooseOption(e){
+  function chooseOption(e) {
     setOption(e.target.id)
+  }
+
+  function retry() {
+    setQuestionCount(0);
+    setMarks(0);
+    setButtonText("Next");
+    setDisplayRetry(false);
+    setDisplayQuestion(true);
+    setOption(-1);
   }
 
   return (
     <>
-      <div>
-        <div>
-          <h2>{questions[questionCount].question}</h2>
-        </div>
+      <div className='temp'>
 
-        <div>
-          <input type='radio' id='0' name='option' onChange={chooseOption} checked={optionSelected == 0}/>
-          {questions[questionCount].options[0]}
-          <input type='radio' id='1' name='option' onChange={chooseOption} checked={optionSelected == 1}/>
-          {questions[questionCount].options[1]}
-          <input type='radio' id='2' name='option' onChange={chooseOption} checked={optionSelected == 2}/>
-          {questions[questionCount].options[2]}
-          <input type='radio' id='3' name='option' onChange={chooseOption} checked={optionSelected == 3}/>
-          {questions[questionCount].options[3]}
-        </div>
 
-        <div>
-          {/* selected option: {optionSelected}
+        <div className='mainWrapper'>
+          <div style={{ display: displayQuestion ? 'block' : 'none' }}>
+            <h2>{questions[questionCount].question}</h2>
+
+            <div className='options'>
+              <div>
+                <input type='radio' id='0' name='option' onChange={chooseOption} checked={optionSelected == 0} />
+                {questions[questionCount].options[0]}
+              </div>
+              <div>
+                <input type='radio' id='1' name='option' onChange={chooseOption} checked={optionSelected == 1} />
+                {questions[questionCount].options[1]}
+              </div>
+              <div>
+                <input type='radio' id='2' name='option' onChange={chooseOption} checked={optionSelected == 2} />
+                {questions[questionCount].options[2]}
+              </div>
+              <div>
+                <input type='radio' id='3' name='option' onChange={chooseOption} checked={optionSelected == 3} />
+                {questions[questionCount].options[3]}
+              </div>
+
+            </div>
+
+            <div>
+              {/* selected option: {optionSelected}
           <br/> */}
-          <button onClick={nextQuestion}>NEXT</button>
+              <button onClick={nextQuestion}>{buttonText}</button>
+            </div>
+          </div>
+
+
+
+
+
+          <div className='retry' style={{ display: displayRetry ? 'block' : 'none' }}>
+            <h2>Total Marks: {marks}</h2>
+
+            <button onClick={retry}>Retry</button>
+          </div>
         </div>
 
-        <div>
-          Marks: {marks}
-        </div>
       </div>
-
-
     </>
   )
 }
